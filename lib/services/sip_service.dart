@@ -24,14 +24,50 @@ class SipService with ChangeNotifier implements SipUaHelperListener {
   SipService() {
     // O setup do SIPUAHelper será feito no método register para permitir parâmetros dinâmicos.
   }
+void register(String websocketUri, String username, String password) async {
+  _lastWebsocketUri = websocketUri;
 
-  void register(String websocketUri, String username, String password) async {
+  final config = UaSettings();
+
+  // ===== WebSocket =====
+  config.webSocketUrl = websocketUri;
+  config.transportType = TransportType.WS;
+  config.webSocketSettings.allowBadCertificate = true;
+
+  // ===== SIP =====
+  config.uri = 'sip:$username@dn002.tongdai1900.com';
+  config.authorizationUser = username;
+  config.password = password;
+  config.displayName = username;
+
+  config.userAgent = 'VOIP-Flutter-Demo';
+
+  // ===== REGISTER =====
+  config.register = true;
+  config.sessionTimers = false;
+
+  // ===== ICE (WebRTC) =====
+  config.iceServers = [
+    {'urls': 'stun:stun.l.google.com:19302'},
+  ];
+
+  // ===== DTMF =====
+  config.dtmfMode = DtmfMode.RFC2833;
+
+  _helper = SIPUAHelper();
+  _helper!.addSipUaHelperListener(this);
+  _helper!.start(config);
+
+  _regStateController.add('Registering...');
+}
+  void register1(String websocketUri, String username, String password) async {
     _lastWebsocketUri = websocketUri;
     // Exemplo de configuração básica. Ajuste conforme seu servidor SIP.
     final config = UaSettings();
     config.webSocketUrl = websocketUri;
     config.webSocketSettings.extraHeaders = {};
-    config.uri = 'sip:$username@${_extractHost(websocketUri)}';
+    //config.uri = 'sip:$username@${_extractHost(websocketUri)}';
+    config.uri = 'sip:$username@dn002.tongdai1900.com';
     config.authorizationUser = username;
     config.password = password;
     config.displayName = username;
@@ -60,7 +96,7 @@ class SipService with ChangeNotifier implements SipUaHelperListener {
     }
     // Usar host direto ou padrão
     final host = _extractHost(_lastWebsocketUri ?? 'sip.example.com');
-    final uri = 'sip:$target@$host';
+    final uri = 'sip:$target@dn002.tongdai1900.com';
     try {
       bool success = await _helper!.call(uri, voiceOnly: voiceOnly);
       if (success) {

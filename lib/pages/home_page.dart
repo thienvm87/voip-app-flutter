@@ -14,10 +14,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController _serverCtrl = TextEditingController(text: 'wss://sip.example.com');
-  final TextEditingController _userCtrl = TextEditingController(text: '1001');
-  final TextEditingController _passCtrl = TextEditingController(text: 'password');
-  final TextEditingController _targetCtrl = TextEditingController(text: '1002');
+  final TextEditingController _serverCtrl = TextEditingController(text: 'wss://pbx.tongdai1900.com:4443');
+  final TextEditingController _userCtrl = TextEditingController(text: '2222');
+  final TextEditingController _passCtrl = TextEditingController(text: 'KBTZr4RgXHvF');
+  final TextEditingController _targetCtrl = TextEditingController(text: '0961166133');
   bool _isVideoCall = false;
 
   void _showPermissionDialog() {
